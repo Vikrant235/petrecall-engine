@@ -64,19 +64,21 @@ const UploadZone: React.FC<UploadZoneProps> = ({ onFileSelect }) => {
       </div>
 
       {/* Drop zone */}
-      <label
+      <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
+        onClick={() => document.getElementById('file-input')?.click()}
         className={`upload-zone ${isDragging ? 'upload-zone-active' : ''}`}
       >
         <input
+          id="file-input"
           type="file"
           accept=".csv,.xlsx,.xls"
           onChange={handleFileInput}
-          className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+          className="hidden"
         />
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center pointer-events-none">
           <div className={`mb-4 rounded-full p-4 transition-colors ${isDragging ? 'bg-primary/20' : 'bg-accent'}`}>
             <CloudUpload className={`h-10 w-10 transition-colors ${isDragging ? 'text-primary' : 'text-primary'}`} />
           </div>
@@ -90,7 +92,7 @@ const UploadZone: React.FC<UploadZoneProps> = ({ onFileSelect }) => {
             <span className="text-xs text-muted-foreground">Supported: CSV, XLSX</span>
           </div>
         </div>
-      </label>
+      </div>
 
       {/* Security note */}
       <div className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground">
