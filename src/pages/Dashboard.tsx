@@ -112,7 +112,15 @@ const Dashboard: React.FC = () => {
   const handleReturnToDashboard = () => {
     setShowSuccess(false);
     setSelectedFile(null);
-    // We keep the recordCount now as it represents queued emails
+    // The recordCount is now preserved to show in StatusCards
+  };
+
+  const handleCreateNewCampaign = () => {
+    setRecordCount(0);
+    setSelectedFile(null);
+    setShowSuccess(false);
+    setUploadProgress(0);
+    setUploadStatus('');
   };
 
   if (loading) {
@@ -134,7 +142,7 @@ const Dashboard: React.FC = () => {
       <main className="flex-1">
         <div className="container py-8">
           {/* Status Cards */}
-          <StatusCards emailsQueued={showSuccess ? recordCount : 0} />
+          <StatusCards emailsQueued={recordCount} />
 
           {/* Upload Zone / Progress */}
           <div className="mt-8">
@@ -151,24 +159,29 @@ const Dashboard: React.FC = () => {
                   Processing {recordCount} records from {selectedFile?.name}
                 </p>
               </div>
-            ) : !showSuccess ? (
+            ) : recordCount === 0 ? (
               <UploadZone onFileSelect={handleFileSelect} />
             ) : (
-              <div className="card-medical p-8 text-center">
+              <div className="card-medical p-8 text-center animate-in fade-in zoom-in duration-500">
                 <div className="mb-4 flex justify-center">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-success/20">
-                    <div className="h-6 w-6 rounded-full bg-success" />
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success/10">
+                    <div className="h-8 w-8 rounded-full bg-success animate-pulse" />
                   </div>
                 </div>
-                <h2 className="text-xl font-semibold text-secondary">Campaign Active</h2>
+                <h2 className="text-xl font-semibold text-secondary">File Uploaded & Processing</h2>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  {recordCount} emails are currently queued for processing.
+                  {recordCount.toLocaleString()} emails are currently in progress.
                 </p>
+                <div className="mt-6 flex justify-center gap-4">
+                  <div className="rounded-lg bg-accent/50 px-4 py-2 text-xs font-medium text-primary">
+                    Campaign Active
+                  </div>
+                </div>
                 <button 
-                  onClick={() => setShowSuccess(false)}
-                  className="btn-primary mt-6 px-8"
+                  onClick={handleCreateNewCampaign}
+                  className="btn-secondary mt-8 text-xs opacity-50 hover:opacity-100 transition-opacity"
                 >
-                  Create New Campaign
+                  Clear and Upload New File
                 </button>
               </div>
             )}
