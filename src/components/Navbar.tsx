@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Shield, PawPrint } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -7,7 +8,8 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ variant = 'landing' }) => {
-  const { user, signInWithGoogle, signOut } = useAuth();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   return (
     <nav className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -40,7 +42,7 @@ const Navbar: React.FC<NavbarProps> = ({ variant = 'landing' }) => {
               </button>
             </>
           ) : (
-            <button onClick={signInWithGoogle} className="btn-secondary text-sm">
+            <button onClick={() => navigate('/login')} className="btn-secondary text-sm">
               Client Login
             </button>
           )}

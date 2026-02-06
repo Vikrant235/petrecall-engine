@@ -1,6 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, Calendar } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
 
 const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" className="h-5 w-5">
@@ -24,7 +24,7 @@ const GoogleIcon = () => (
 );
 
 const HeroSection: React.FC = () => {
-  const { signInWithGoogle } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <section className="gradient-hero relative overflow-hidden">
@@ -51,9 +51,9 @@ const HeroSection: React.FC = () => {
 
           {/* CTA Button */}
           <div className="mt-10 animate-fade-in [animation-delay:200ms]">
-            <button onClick={signInWithGoogle} className="btn-google group">
+            <button onClick={() => navigate('/login')} className="btn-google group">
               <GoogleIcon />
-              <span>Get Started with Google</span>
+              <span>Get Started</span>
             </button>
           </div>
 
