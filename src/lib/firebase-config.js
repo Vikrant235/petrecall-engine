@@ -12,10 +12,14 @@
  * SETUP INSTRUCTIONS:
  * 1. Create a Firebase project at https://console.firebase.google.com
  * 2. Enable Google Authentication in Firebase Console > Authentication > Sign-in method
- * 3. Add your domain to Authorized domains in Firebase Console
- * 4. Replace the placeholder values below with your actual Firebase config
- * 5. For production, move these values to environment variables
+ * 3. Enable Email/Password Authentication in Firebase Console > Authentication > Sign-in method
+ * 4. Add your domain to Authorized domains in Firebase Console
+ * 5. Replace the placeholder values below with your actual Firebase config
+ * 6. For production, move these values to environment variables
  */
+
+import { initializeApp, getApps } from 'firebase/app';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
 // Firebase configuration object
 // Replace these placeholder values with your actual Firebase project config
@@ -45,6 +49,23 @@ const validateConfig = () => {
   return true;
 };
 
-// Export configuration and validation
-export { firebaseConfig, validateConfig };
-export default firebaseConfig;
+// Initialize Firebase app (only if not already initialized)
+let app;
+if (!getApps().length) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApps()[0];
+}
+
+// Initialize Firebase Auth
+const auth = getAuth(app);
+
+// Initialize Google Auth Provider
+const googleProvider = new GoogleAuthProvider();
+
+// Check if config is valid
+const isConfigValid = validateConfig();
+
+// Export configuration and instances
+export { firebaseConfig, validateConfig, auth, googleProvider, isConfigValid };
+export default app;
