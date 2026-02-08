@@ -7,7 +7,7 @@ import UploadZone from '@/components/UploadZone';
 import OnboardingModal from '@/components/OnboardingModal';
 import SpamProtectionModal from '@/components/SpamProtectionModal';
 import UploadSuccess from '@/components/UploadSuccess';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 
 const Dashboard: React.FC = () => {
   const { user, loading } = useAuth();
@@ -44,24 +44,30 @@ const Dashboard: React.FC = () => {
   const processFile = async (file: File) => {
     return new Promise<number>((resolve) => {
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         const data = e.target?.result;
         if (file.name.endsWith('.csv')) {
           const text = data as string;
           const rows = text.split('\n').filter(row => row.trim() !== '');
           resolve(Math.max(0, rows.length - 1)); // Subtract header
         } else {
-          const workbook = XLSX.read(data, { type: 'binary' });
-          const firstSheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[firstSheetName];
-          const jsonData = XLSX.utils.sheet_to_json(worksheet);
-          resolve(jsonData.length);
+          const workbook = new ExcelJS.Workbook();
+          const buffer = data as ArrayBuffer;
+          await workbook.xlsx.load(buffer);
+          const worksheet = workbook.getWorksheet(1);
+          if (worksheet) {
+            // exceljs rowCount includes empty rows often, but rowCount is generally correct for data
+            // Subtract 1 for the header
+            resolve(Math.max(0, worksheet.actualRowCount - 1));
+          } else {
+            resolve(0);
+          }
         }
       };
       if (file.name.endsWith('.csv')) {
         reader.readAsText(file);
       } else {
-        reader.readAsBinaryString(file);
+        reader.readAsArrayBuffer(file);
       }
     });
   };

@@ -1,14 +1,14 @@
 /**
  * Firebase Configuration Module
- * 
+ *
  * This module initializes Firebase and makes it available globally for other modules.
- * 
+ *
  * SECURITY NOTES:
  * - Never commit actual API keys to version control
  * - Use environment variables in production
  * - Enable App Check in Firebase Console for additional security
  * - Configure proper security rules in Firebase Console
- * 
+ *
  * SETUP INSTRUCTIONS:
  * 1. Create a Firebase project at https://console.firebase.google.com
  * 2. Enable Google Authentication in Firebase Console > Authentication > Sign-in method
@@ -18,31 +18,34 @@
  * 6. For production, move these values to environment variables
  */
 
-import { initializeApp, getApps } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { initializeApp, getApps } from "firebase/app";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 // Firebase configuration object
 // Replace these placeholder values with your actual Firebase project config
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "YOUR_API_KEY",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "YOUR_PROJECT.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "YOUR_PROJECT_ID",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "YOUR_PROJECT.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "YOUR_MESSAGING_SENDER_ID",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "YOUR_APP_ID"
+  apiKey: "AIzaSyAsU21s52StUEGPra_JxcvhfGU_o9km-Nk",
+  authDomain: "petrecall-engine.firebaseapp.com",
+  databaseURL: "https://petrecall-engine-default-rtdb.firebaseio.com",
+  projectId: "petrecall-engine",
+  storageBucket: "petrecall-engine.firebasestorage.app",
+  messagingSenderId: "331059307038",
+  appId: "1:331059307038:web:a750422df553b1f454840f",
+  measurementId: "G-435WE1FBP9",
 };
 
 // Validate configuration
 const validateConfig = () => {
-  const requiredFields = ['apiKey', 'authDomain', 'projectId'];
+  const requiredFields = ["apiKey", "authDomain", "projectId"];
   const missingFields = requiredFields.filter(
-    field => !firebaseConfig[field] || firebaseConfig[field].startsWith('YOUR_')
+    (field) =>
+      !firebaseConfig[field] || firebaseConfig[field].startsWith("YOUR_"),
   );
-  
+
   if (missingFields.length > 0) {
     console.warn(
-      `Firebase config incomplete. Missing or placeholder values: ${missingFields.join(', ')}. ` +
-      'Please update firebase-config.js with your actual Firebase project credentials.'
+      `Firebase config incomplete. Missing or placeholder values: ${missingFields.join(", ")}. ` +
+        "Please update firebase-config.js with your actual Firebase project credentials.",
     );
     return false;
   }
