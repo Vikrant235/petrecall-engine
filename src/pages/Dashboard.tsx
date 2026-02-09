@@ -8,6 +8,9 @@ import OnboardingModal from '@/components/OnboardingModal';
 import SpamProtectionModal from '@/components/SpamProtectionModal';
 import UploadSuccess from '@/components/UploadSuccess';
 import ExcelJS from 'exceljs';
+import { storage, db } from '@/lib/firebase-config';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const Dashboard: React.FC = () => {
   const { user, loading } = useAuth();
@@ -72,6 +75,31 @@ const Dashboard: React.FC = () => {
     });
   };
 
+  const saveToFirebase = async (file: File, count: number) => {
+    if (!user) return;
+
+    try {
+      // 1. Upload file to Firebase Storage
+      const storageRef = ref(storage, `uploads/${user.uid}/${Date.now()}_${file.name}`);
+      const snapshot = await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+
+      // 2. Save metadata to Firestore
+      await addDoc(collection(db, 'campaigns'), {
+        userId: user.uid,
+        fileName: file.name,
+        fileUrl: downloadURL,
+        recordCount: count,
+        status: 'queued',
+        createdAt: serverTimestamp(),
+      });
+
+      console.log('Campaign saved to Firebase');
+    } catch (error) {
+      console.error('Error saving to Firebase:', error);
+    }
+  };
+
   const handleFileSelect = async (file: File) => {
     setSelectedFile(file);
     setIsUploading(true);
@@ -88,11 +116,14 @@ const Dashboard: React.FC = () => {
     ];
 
     statuses.forEach((status, index) => {
-      setTimeout(() => {
+      setTimeout(async () => {
         setUploadStatus(status.label);
         setUploadProgress(((index + 1) / statuses.length) * 100);
         
         if (index === statuses.length - 1) {
+          // Final step: Save to Firebase
+          await saveToFirebase(file, count);
+          
           setTimeout(() => {
             setIsUploading(false);
             setShowSpamProtection(true);

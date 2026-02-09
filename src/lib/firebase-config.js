@@ -20,18 +20,18 @@
 
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getStorage } from "firebase/storage";
+import { getFirestore } from "firebase/firestore";
 
 // Firebase configuration object
 // Replace these placeholder values with your actual Firebase project config
 const firebaseConfig = {
-  apiKey: "AIzaSyAsU21s52StUEGPra_JxcvhfGU_o9km-Nk",
-  authDomain: "petrecall-engine.firebaseapp.com",
-  databaseURL: "https://petrecall-engine-default-rtdb.firebaseio.com",
-  projectId: "petrecall-engine",
-  storageBucket: "petrecall-engine.firebasestorage.app",
-  messagingSenderId: "331059307038",
-  appId: "1:331059307038:web:a750422df553b1f454840f",
-  measurementId: "G-435WE1FBP9",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 // Validate configuration
@@ -39,7 +39,7 @@ const validateConfig = () => {
   const requiredFields = ["apiKey", "authDomain", "projectId"];
   const missingFields = requiredFields.filter(
     (field) =>
-      !firebaseConfig[field] || firebaseConfig[field].startsWith("YOUR_"),
+      !firebaseConfig[field] || firebaseConfig[field]?.startsWith("YOUR_"),
   );
 
   if (missingFields.length > 0) {
@@ -63,6 +63,12 @@ if (!getApps().length) {
 // Initialize Firebase Auth
 const auth = getAuth(app);
 
+// Initialize Firebase Storage
+const storage = getStorage(app);
+
+// Initialize Cloud Firestore
+const db = getFirestore(app);
+
 // Initialize Google Auth Provider
 const googleProvider = new GoogleAuthProvider();
 
@@ -70,5 +76,5 @@ const googleProvider = new GoogleAuthProvider();
 const isConfigValid = validateConfig();
 
 // Export configuration and instances
-export { firebaseConfig, validateConfig, auth, googleProvider, isConfigValid };
+export { firebaseConfig, validateConfig, auth, googleProvider, storage, db, isConfigValid };
 export default app;
