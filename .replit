@@ -41,4 +41,14 @@ externalPort = 80
 [[ports]]
 localPort = 5001
 externalPort = 3001
+
+[userenv]
+
+[userenv.shared]
+VITE_FIREBASE_STORAGE_BUCKET = "petrecall-engine.firebasestorage.app"
+VITE_FIREBASE_APP_ID = "1:331059307038:web:a750422df553b1f454840f"
+VITE_FIREBASE_PROJECT_ID = "petrecall-engine"
+VITE_FIREBASE_AUTH_DOMAIN = "petrecall-engine.firebaseapp.com"
+VITE_FIREBASE_MESSAGING_SENDER_ID = "331059307038"
+VITE_FIREBASE_API_KEY = "AIzaSyAsU21s52StUEGPra_JxcvhfGU_o9km-Nk"
     
